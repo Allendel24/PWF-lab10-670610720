@@ -6,8 +6,13 @@ export default function RandomUserPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [genAmount, setGenAmount] = useState(1);
+  const [isFirstLoad, setIsFirstLoad] = useState(true);
 
   const generateBtnOnClick = async () => {
+    if (isFirstLoad) {
+      setIsFirstLoad(false);
+      return;
+    }
     setIsLoading(true);
     const resp = await axios.get(
       `https://randomuser.me/api/?results=${genAmount}`
