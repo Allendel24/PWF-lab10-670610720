@@ -1,18 +1,32 @@
 import { UserCard } from "../components/UserCard";
-import { cleanUser} from "../libs/CleanUser";
+import { cleanUser } from "../libs/CleanUser";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export default function RandomUserPage() {
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [genAmount, setGenAmount] = useState(1);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
 
-  const generateBtnOnClick = async () => {
+  useEffect(() => {
     if (isFirstLoad) {
       setIsFirstLoad(false);
       return;
     }
+    const srrGenAmount = JSON.stringify(genAmount);
+    localStorage.setItem("genAmount", srrGenAmount);
+  }, [genAmount]);
+
+  useEffect(() => {
+    const strGenAmount = localStorage.getItem("genAmount");
+    if (strGenAmount === null) {
+      return;
+    }
+    const loadedGenAmount = JSON.parse(strGenAmount);
+    setGenAmount(loadedGenAmount);
+  }, []);
+
+  const generateBtnOnClick = async () => {
     setIsLoading(true);
     const resp = await axios.get(
       `https://randomuser.me/api/?results=${genAmount}`
